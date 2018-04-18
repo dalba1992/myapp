@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Blank App</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<script src="js1.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<!--<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>-->	
+<style>
+#footer
+	{
+		position:absolute;
+		bottom:0;
+		width:100%;
+		
+	}
+</style>
+
+</head>
+	<body>
+		<div data-role="page" id="main">
+			<div data-role="header">
+			<h1>Guys on Wheels</h1>
+			</div>
+			<div data-role="main" class="ui-content">
+				<form class="login-form" method="post">
+					<input type="text" name="username" id="username" placeholder="Username" /><br>
+					<input type="password" name="password" id="password"  placeholder="Password" />
+					<br />
+					<input type="submit" name="submit" class="submit" value="Login" />
+				</form>
+				
+				<div id="message"></div>
+                
+			</div>
+			<div data-role="footer" id="footer">
+			<h2>SSL Computers</h2>
+			</div>
+		</div>
+      
+	<script>
+	$(document).ready(function(){
+		  $(".submit").on('click', function(e){
+			e.preventDefault();
+			var username = $("#username").val();
+			var password = $("#password").val();
+			if(username && password){
+				$.ajax({
+					url: 'http://www.guysonwheels.ca/disp/login.php',
+					type : "POST",
+					data :{ username: username, password:password},
+					success : function(text) {
+						const response = text;
+						if (response == 0)
+							alert('wrong credential');
+						else if (response == -1)
+							alert('please input username and password correctly');
+						else {
+							localStorage.userdata = response;
+							window.location = 'Main.html';
+						}
+					}	
+				});
+			}
+		});
+	});
+	</script>
+	<script src="cordova.js"></script>
+    </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Blank App</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<script src="js1.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<style>
+        #footer
+            {
+                position:absolute;
+                bottom:0;
+                width:100%;
+                
+            }
+        </style>
+    </head>
+	<body>
+		<button class="btn-back">Back</button>
+		<div class="main-content"></div>
+		<button class="btn-change-status" data-content="picked up">Picked up</button>
+		<button class="btn-change-status" data-content="on way">On way</button>
+		<button class="btn-change-status" data-content="delay">Delay</button>
+		<button class="btn-change-status" data-content="delivered">Delivered</button>
+	<script>
+		$(function() {
+			job_id = localStorage.job_id;
+			$.ajax({
+				url: 'http://www.guysonwheels.ca/disp/job.php',
+				type : "POST",
+				data :{ job_id: job_id },
+				success: function(data) {
+					const json = JSON.parse(data);
+					let html = '';
+					html += '<span>From Business: ' + json.fromBusiness + '</span><br>';
+					html += '<span>From Address: '+ json.fromName + '</span><br>';
+					html += '<span>From Phone: ' + json.fromPhone + '</span><br>';
+					html += '<span>Customer Name: ' + json.customerName + '</span><br>';
+					html += '<span>Customer Phone: ' + json.customerPhone + '</span><br>';
+					html += '<span>Customer Address: ' + json.customerAddress + '</span><br>';
+					html += '<span>Status: ' + json.Status + '</span><br>';
+					$('.main-content').html(html);
+				}
+			});
+			$('.btn-back').on('click', function() {
+				window.location = 'Main.html';
+			});
+			$('.btn-change-status').on('click', function() {
+				const text = $(this).data('content');
+				$.ajax({
+					url: 'http://www.guysonwheels.ca/disp/set_job_status.php',
+					type : "POST",
+					data :{ job_id: job_id, text: text },
+					success: function(data) {
+						if (data != 1) 
+							alert("error");
+						else 
+							window.location.reload();
+					}
+				});
+			});
+		});
+	</script>
+	</body>
+</html>

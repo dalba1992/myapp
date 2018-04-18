@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Blank App</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<script src="js1.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<style>
+        #footer
+            {
+                position:absolute;
+                bottom:0;
+                width:100%;
+                
+            }
+        </style>
+    </head>
+	<body>
+		<div data-role="page" id="main">
+			<div data-role="header">
+			<h1>Guys on Wheels</h1>
+			</div>
+			<div data-role="main" class="ui-content">
+               <ul data-role="listview">
+                   <li>Driver: <span class="driver-name"></span> <button style="float:right" class="btn-logout">Log out</button></li>
+				   <div style="clear:both"></div>
+                   <li><a href="index.html#myjobs">My Jobs</a></li>
+                   <li><a href="index.html#myreports">My Reports</a></li>
+                   <li><a href="index.html#contactDispatcher">Contact Dispatcher</a></li>
+                </ul>
+                
+			</div>
+			<div data-role="footer" id="footer">
+			<h2>SSL Computers</h2>
+			</div>
+		</div>
+        
+        <div data-role="page" id="myjobs">
+			<div data-role="header">
+			<h1>Guys on Wheels</h1>
+			</div>
+			<div data-role="main" class="ui-content">
+               <ul data-role="listview">
+                   <li>Driver: <span class="driver-name"></span> <button style="float:right" class="btn-logout">Log out</button></li>
+				   
+                   <li><a href="index.html#myjobs">My Jobs</a></li>
+                   <li><a href="index.html#myreports">My Reports</a></li>
+                   <li><a href="index.html#contactDispatcher">Contact Dispatcher</a></li>
+                </ul>
+				
+				<div class="jobs-wrapper" style="margin-top:30px;"></div>
+			</div>
+			<div data-role="footer" id="footer">
+			<h2>SSL Computers</h2>
+			</div>
+		</div>
+        
+        <div data-role="page" id="myreports">
+			<div data-role="header">
+			<h1>Guys on Wheels</h1>
+			</div>
+			<div data-role="main" class="ui-content">
+               <ul data-role="listview">
+                   <li>Driver: <span class="driver-name"></span> <button style="float:right" class="btn-logout">Log out</button></li>
+				   
+                   <li><a href="index.html#myjobs">My Jobs</a></li>
+                   <li><a href="index.html#myreports">My Reports</a></li>
+                   <li><a href="index.html#contactDispatcher">Contact Dispatcher</a></li>
+                </ul>
+                <div class="report-container" style="margin-top:20px">
+					From <input type='date' class="date-from">
+					To <input type='date' class="date-to">
+					<button class="btn-submit-report">Submit</button>
+				</div>
+			</div>
+			<div data-role="footer" id="footer">
+			<h2>SSL Computers</h2>
+			</div>
+		</div>
+        
+        <div data-role="page" id="contactDispatcher">
+			<div data-role="header">
+			<h1>Guys on Wheels</h1>
+			</div>
+			<div data-role="main" class="ui-content">
+               <ul data-role="listview">
+                   <li>Driver: <span class="driver-name"></span> <button style="float:right" class="btn-logout">Log out</button></li>
+				   
+                   <li><a href="index.html#myjobs">My Jobs</a></li>
+                   <li><a href="index.html#myreports">My Reports</a></li>
+                   <li><a href="index.html#contactDispatcher">Contact Dispatcher</a></li>
+                </ul>
+                
+			</div>
+			<div data-role="footer" id="footer">
+			<h2>SSL Computers</h2>
+			</div>
+		</div>
+		<script src="cordova.js"></script>
+		<script>
+			document.addEventListener("deviceready", onDeviceReady, false);
+			function onDeviceReady() {
+				console.log("navigator.geolocation works well");
+			}
+		</script>
+		<script>
+			$(function(){
+				const today = new Date().toISOString().substring(0, 10);
+				document.querySelector('.date-from').value = today;
+				document.querySelector('.date-to').value = today;
+				const arr_user = JSON.parse(localStorage.userdata);
+				$('.driver-name').html(arr_user.drivername);
+				$('.btn-logout').on('click', function(){
+					window.location = 'index.html';
+				});
+				$.ajax({
+					url: 'http://www.guysonwheels.ca/disp/jobs.php',
+					type : "POST",
+					data :{ driver_name: arr_user.drivername },
+					success: function(data) {
+						let html = '';
+						if (data !="0" && data != "-1") {
+							const json = JSON.parse(data);
+							json.forEach(function(record) {
+								html += '<span>'+record.fromBusiness+'</span>'+'&nbsp;&nbsp;&nbsp;';
+								html += '<span>'+record.customerName + '</span>'+'&nbsp;&nbsp;&nbsp;';
+								html += '<span>'+record.customerAddress + '</span>'+'&nbsp;&nbsp;&nbsp;';
+								html += '<button onclick="open_job('+record.id+')">Open</button>'
+							});
+							$('.jobs-wrapper').html(html);
+						}
+					}
+				});
+			});
+			function open_job(id) {
+				localStorage.job_id = id;
+				window.location = 'job.html';
+			}
+			$('.btn-submit-report').on('click', function() {
+				const date_from = $('.date-from').val();
+				const date_to = $('.date-to').val();
+				localStorage.date_from = date_from;
+				localStorage.date_to = date_to;
+				window.location = 'reports.html';
+			});
+		</script>
+    </body>
+</html>
